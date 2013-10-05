@@ -1,6 +1,13 @@
 
 
-
+/*
+ * Compilation:  javac PercolationStats.java
+ * Execution:  java PercolationStats <N> <T>
+ * Dependencies: Percolation.class
+ *
+ * Percolation Sats class.
+ *
+ */
 
 
 public class PercolationStats {
@@ -10,29 +17,29 @@ public class PercolationStats {
     // perform T independent computational experiments on an N-by-N grid
     public PercolationStats(int N, int T)
     {
-        if(N<=0) throw new IllegalArgumentException("N value out of bounds");
-        if(T<=0) throw new IllegalArgumentException("T value out of bounds");
+        if (N <= 0) throw new IllegalArgumentException("N value out of bounds");
+        if (T <= 0) throw new IllegalArgumentException("T value out of bounds");
 
 
         thresholds = new double[T];
 
-        for(int i = 0; i<T ; i++)
+        for (int i = 0; i < T; i++)
         {
             //StdRandom.setSeed(i);
-            int open_count = 0;
+            int openCount = 0;
             Percolation p = new Percolation(N);
-            while(!p.percolates())
+            while (!p.percolates())
             {
-                int k,j;
+                int k, j;
                 k = StdRandom.uniform(N) + 1;
                 j = StdRandom.uniform(N) + 1;
-                if(!p.isOpen(k,j))
+                if (!p.isOpen(k, j))
                 {
                     p.open(k, j);
-                    open_count++;
+                    openCount++;
                 }
             }
-            thresholds[i] = open_count / (double) (N * N);
+            thresholds[i] = openCount / (double) (N * N);
 
         }
         
@@ -41,7 +48,7 @@ public class PercolationStats {
     public double mean()                     
     {
         double sum = 0;
-        for(int i = 0; i < thresholds.length; i++)
+        for (int i = 0; i < thresholds.length; i++)
         {
             sum += thresholds[i];
         }
@@ -55,9 +62,9 @@ public class PercolationStats {
         double sum = 0;
         double mean = this.mean();
 
-        for(int i = 0; i < thresholds.length; i++)
+        for (int i = 0; i < thresholds.length; i++)
         {
-            sum += Math.pow(thresholds[i] - mean, 2);
+            sum += (thresholds[i] - mean) * (thresholds[i] - mean);
         }
 
         return Math.sqrt(sum/(thresholds.length - 1));
@@ -79,25 +86,20 @@ public class PercolationStats {
     // test client, described below
     public static void main(String[] args)   
     {
-        if(args.length != 2)
+        if (args.length != 2)
         {
             StdOut.println("Must specify 2 arguments");
-            System.exit(1);
 
         }
-        try
+        else
         {
                 int N  = Integer.parseInt(args[0]);
                 int T  = Integer.parseInt(args[1]);
                 PercolationStats ps = new PercolationStats(N, T);
                 StdOut.println("mean                     = " + ps.mean());
                 StdOut.println("stddev                   = " + ps.stddev());
-                StdOut.println("95% confidence interval  = " + ps.confidenceLo() + ", " + ps.confidenceHi());
-        }
-        catch (NumberFormatException e)
-        {
-            StdOut.println("Argument" + " must be an integer");
-            System.exit(1);
+                StdOut.println("95% confidence interval  = " + ps.confidenceLo()
+                               + ", " + ps.confidenceHi());
         }
     }
 }
