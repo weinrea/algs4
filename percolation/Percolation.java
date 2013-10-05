@@ -20,6 +20,7 @@ public class Percolation {
 
     // to connect adjacent open nodes in grid
     private WeightedQuickUnionUF UF;
+    private WeightedQuickUnionUF FullUF;
 
     // create N-by-N grid, with all sites blocked
     public Percolation(int N)
@@ -34,6 +35,7 @@ public class Percolation {
 
         // add 2 for top and bottom
         UF = new WeightedQuickUnionUF(N*N + 2);
+        FullUF = new WeightedQuickUnionUF(N*N + 1);
     }
 
     private int xyTo1D(int i, int j)
@@ -58,6 +60,7 @@ public class Percolation {
         if (isOpen(x, y))
         {
             UF.union(xyTo1D(i, j), xyTo1D(x, y)); 
+            FullUF.union(xyTo1D(i, j), xyTo1D(x, y)); 
         }
 
         return;
@@ -83,6 +86,7 @@ public class Percolation {
         if (i == 1)
         {
             UF.union(0, xyTo1D(i, j)); 
+            FullUF.union(0, xyTo1D(i, j)); 
         }    
 
         // left 
@@ -111,7 +115,7 @@ public class Percolation {
     public boolean isFull(int i, int j)
     {
         validateIndices(i, j);
-        return UF.connected(0, xyTo1D(i, j));
+        return FullUF.connected(0, xyTo1D(i, j));
         
     }
 
